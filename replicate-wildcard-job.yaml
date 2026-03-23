@@ -1,0 +1,29 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: replicate-wildcard-annotation
+  namespace: replicator
+  labels:
+    app: replicate-wildcard
+spec:
+  backoffLimit: 3
+  template:
+    metadata:
+      labels:
+        app: replicate-wildcard
+    spec:
+      serviceAccountName: replicator
+      restartPolicy: OnFailure
+      containers:
+        - name: annotate
+          image: bitnami/kubectl:1.27.4
+          imagePullPolicy: IfNotPresent
+          command:
+            - /bin/sh
+            - -c
+            - |
+              set -euo pipefail
+              echo "Annotating secret wildcard-enricocc-tls in namespace cert-manager to replicate to adguard,cattle-system"
+              kubectl annotate secret wildcard-enricocc-tls -n cert-manager \
+                replicator.v1.mittwald.de/replicate-to="adguard,cattle-system" --overwrite
+              echo "Annotation applied. Exiting."

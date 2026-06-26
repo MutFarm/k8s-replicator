@@ -16,7 +16,7 @@ spec:
       restartPolicy: OnFailure
       containers:
         - name: annotate
-          image: bitnami/kubectl:1.27.4
+          image: bitnami/kubectl:latest
           imagePullPolicy: IfNotPresent
           command:
             - /bin/sh
